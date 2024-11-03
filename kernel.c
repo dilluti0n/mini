@@ -8,23 +8,21 @@
 #endif
 
 volatile uint16_t *vga_buffer = (uint16_t *)0xB8000;
-const int VGA_COLS = 80;
-const int VGA_ROWS = 25;
 
-int term_col = 0;
-int term_row = 0;
-uint8_t term_color = 0x0F;	/* Black background, White foreground */
+#define VGA_COLS 80
+#define VGA_ROWS 2
 
-#define VGA_BUFFER_CHAR(char) (((uint16_t)term_color << 8) | (char))
+#define VGA_BUFFER_CHAR(color, char) (((uint16_t)(color) << 8) | (char))
+#define VGA_BUFFER_INDEX(column, row) (VGA_COLS * (column) + (row))
+
+static int term_col = 0;
+static int term_row = 0;
+static uint8_t term_color = 0x0F;	/* Black background, White foreground */
 
 void term_init()
 {
-	for (int i = 0; i < VGA_COLS; i++) {
-		for (int j = 0; j < VGA_ROWS; j++) {
-			const size_t index = (VGA_COLS * j) + i;
-			vga_buffer[index] = VGA_BUFFER_CHAR(' ');
-		}
-	}
+	for (int i = 0; i < VGA_BUFFER_INDEX(VGA_COLS, VGA_ROWS); i++)
+		vga_buffer[i] = VGA_BUFFER_CHAR(term_color, ' ');
 }
 
 void term_putc(char c)
@@ -35,8 +33,8 @@ void term_putc(char c)
 		term_row++;
 		break;
 	default:
-		vga_buffer[VGA_COLS * term_row + term_col++] =
-			VGA_BUFFER_CHAR(c);
+		vga_buffer[VGA_BUFFER_INDEX(term_col, term_row++)] =
+			VGA_BUFFER_CHAR(term_color, c);
 		break;
 	}
 
