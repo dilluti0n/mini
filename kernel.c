@@ -45,3 +45,9 @@ void term_putc(char c)
 		term_row++;
 	}
 }
+
+void term_print(const char *str, size_t lim)
+{
+	for (size_t i = 0; str[i] != '\0' && i < lim; i++)
+		term_putc(str[i]);
+}
