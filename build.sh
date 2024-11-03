@@ -11,7 +11,7 @@ ISO="${ISODIR}/mini.iso"
 
 ${ASM} start.s -o "${BINDIR}/start.o" &&
     ${CC} -std=gnu99 -ffreestanding -g -c kernel.c -o "${BINDIR}/kernel.o" &&
-    ${CC} -std=gnu99 -ffreestanding -nostdlib -g -T linker.ld start.o kernel.o -o ${KERNEL} -lgcc &&
+    ${CC} -std=gnu99 -ffreestanding -nostdlib -g -T linker.ld "${BINDIR}/start.o" "${BINDIR}/kernel.o" -o ${KERNEL} -lgcc &&
     cp ${KERNEL} ${ISOKERNEL}
 
 if grub-file --is-x86-multiboot ${ISOKERNEL}; then
