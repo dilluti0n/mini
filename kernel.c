@@ -51,3 +51,9 @@ void term_print(const char *str, size_t lim)
 	for (size_t i = 0; str[i] != '\0' && i < lim; i++)
 		term_putc(str[i]);
 }
+
+void kernel_main()
+{
+	term_init();
+	term_print("Hello, World!\n",sizeof("Hello, World!\n"));
+}
