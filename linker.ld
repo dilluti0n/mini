@@ -1,16 +1,12 @@
-ENTRY(start) 			/* on start.s */
+ENTRY(_start) 			/* on start.s */
 
 SECTIONS
 {
  . = 1M;
- .rodata BLOCK(4K) : ALIGN(4K)
- {
-  *(.multiboot)
- }
-
  .text BLOCK(4K) : ALIGN(4K)
  {
-  *(.rodata)
+    *(.multiboot)
+    *(.text)
  }
 
  .rodata BLOCK(4K) : ALIGN(4K)
