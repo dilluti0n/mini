@@ -7,7 +7,7 @@ CFLAGS=-std=gnu99 -ffreestanding -g
 all: $(KERNEL)
 
 $(KERNEL): $(BINDIR)/start.o $(BINDIR)/kernel.o linker.ld
-	$(CC) $(CFLAGS) -T linker.ld "$(BINDIR)/start.o" "$(BINDIR)/kernel.o" -o $(KERNEL) -lgcc
+	$(CC) $(CFLAGS) -nostdlib -T linker.ld "$(BINDIR)/start.o" "$(BINDIR)/kernel.o" -o $(KERNEL) -lgcc
 
 $(BINDIR)/start.o: start.s
 	$(ASM) start.s -o "$(BINDIR)/start.o"
