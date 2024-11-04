@@ -1,19 +1,32 @@
+ARCH=i386
 ASM=i686-elf-as
 CC=i686-elf-gcc
-BINDIR=bin
-KERNEL=$(BINDIR)/mini.bin
-CFLAGS=-std=gnu99 -ffreestanding -g
+MAKE=make
+KERNEL = vminizz
+
+CFLAGS := -std=gnu99 -ffreestanding -g
+
+TOPDIR = $(shell pwd)
+OBJDIR = arch/$(ARCH)
+LINKER = $(OBJDIR)/linker.ld
+CFLAGS += -I$(TOPDIR)/include
+
+C_SRCS = $(wildcard lib/*.c init/*.c arch/$(ARCH)/*.c)
+S_SRCS = $(wildcard arch/$(ARCH)/*.s)
+OBJS = $(C_SRCS:.c=.o) $(S_SRCS:.s=.o)
+
+.PHONY: all clean
 
 all: $(KERNEL)
 
-$(KERNEL): $(BINDIR)/start.o $(BINDIR)/kernel.o linker.ld
-	$(CC) $(CFLAGS) -nostdlib -T linker.ld "$(BINDIR)/start.o" "$(BINDIR)/kernel.o" -o $(KERNEL) -lgcc
+$(OBJS):
+	$(MAKE) -C $(dir $@) TOPDIR=$(TOPDIR) CC=$(CC) ASM=$(ASM) CFLAGS="$(CFLAGS)"
 
-$(BINDIR)/start.o: start.s
-	$(ASM) start.s -o "$(BINDIR)/start.o"
-
-$(BINDIR)/kernel.o: kernel.c
-	$(CC) $(CFLAGS) -c kernel.c -o "$(BINDIR)/kernel.o"
+$(KERNEL): $(OBJS)
+	$(CC) $(CFLAGS) -nostdlib -lgcc -T $(LINKER) -o $@ $(OBJS)
 
 clean:
-	rm -rf bin/*
+	$(MAKE) -C arch/i386 clean
+	$(MAKE) -C lib clean
+	$(MAKE) -C init clean
+	rm -f $(KERNEL)

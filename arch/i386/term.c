@@ -1,3 +1,6 @@
+#include <mini/term.h>
+#include <mini/string.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -130,24 +133,8 @@ void term_write(const char *str, size_t lim)
 		term_putc(str[i]);
 }
 
-size_t strlen(const char *str)
-{
-	size_t i;
-	for (i = 0; str[i] != '\0'; i++)
-		;
-	return i;
-}
-
 void term_println(const char *str)
 {
 	term_write(str, strlen(str));
 	term_newline();
-}
-
-void kernel_main()
-{
-	term_init();
-	term_println("This is mini with version...");
-	term_println("so...\tWhat should I do next??\t\t\t\t");
-	term_println("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest");
 }

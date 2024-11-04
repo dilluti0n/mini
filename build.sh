@@ -1,15 +1,26 @@
 export LIBRARY_PATH="/usr/i686-elf/lib/"
 ASM=i686-elf-as
 CC=i686-elf-gcc
-BINDIR="bin"
 ISODIR="iso"
-KERNEL="${BINDIR}/mini.bin"
-ISOKERNEL="${ISODIR}/boot/mini.bin"
-ISO="${BINDIR}/mini.iso"
+KERNEL=vminizz
+ISOKERNEL="${ISODIR}/boot/${KERNEL}"
+ISO="mini.iso"
 
-set +x
+GRUBDIR="${ISODIR}/boot/grub"
+GRUBCFG="${GRUBDIR}/grub.cfg"
 
-make &&
-    cp ${KERNEL} ${ISOKERNEL} &&
-    grub-file --is-x86-multiboot ${ISOKERNEL} &&
-    grub-mkrescue ${ISODIR} -o ${ISO} && exec qemu-system-i386 ${ISO}
+set -e
+
+make
+
+mkdir -p ${GRUBDIR}
+cat > ${GRUBCFG} << EOF
+menuentry "mini Operating System" {
+  multiboot /boot/${KERNEL}
+  boot
+}
+EOF
+
+cp ${KERNEL} ${ISOKERNEL}
+grub-file --is-x86-multiboot ${ISOKERNEL}
+grub-mkrescue ${ISODIR} -o ${ISO} && exec qemu-system-i386 ${ISO}
