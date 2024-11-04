@@ -1,6 +1,6 @@
 ASM=i686-elf-as
 CC=i686-elf-gcc
-BINDIR=bin/
+BINDIR=bin
 KERNEL=$(BINDIR)/mini.bin
 CFLAGS=-std=gnu99 -ffreestanding -g
 
